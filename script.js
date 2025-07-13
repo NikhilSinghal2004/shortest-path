@@ -27,7 +27,7 @@ const cities = {
 
 const roads = {
   Delhi: { Jaipur: 250, Lucknow: 400 },
-  Jaipur: { Ahmedabad: 300, Delhi: 250 },
+  Jaipur: { Ahmedabad: 300 },
   Ahmedabad: { Surat: 150, Indore: 350 },
   Surat: { Mumbai: 300 },
   Mumbai: { Pune: 150 },
@@ -35,17 +35,25 @@ const roads = {
   Hyderabad: { Nagpur: 300, Bengaluru: 500 },
   Nagpur: { Bhopal: 300 },
   Bhopal: { Indore: 200, Kanpur: 450 },
-  Indore: { Bhopal: 200 },
+  Indore: {},
   Kanpur: { Lucknow: 100, Varanasi: 300 },
-  Lucknow: { Delhi: 400, Patna: 400 },
+  Lucknow: { Patna: 400 },
   Varanasi: { Patna: 250 },
   Patna: { Ranchi: 200 },
   Ranchi: { Kolkata: 300 },
   Kolkata: { Guwahati: 450, Vishakhapatnam: 500 },
   Vishakhapatnam: { Chennai: 400 },
   Chennai: { Bengaluru: 350 },
-  Bengaluru: { Hyderabad: 500 }
+  Bengaluru: {}
 };
+
+// Make roads bidirectional
+for (let city in roads) {
+  for (let neighbor in roads[city]) {
+    if (!roads[neighbor]) roads[neighbor] = {};
+    roads[neighbor][city] = roads[city][neighbor];
+  }
+}
 
 let selected = [];
 
