@@ -1,78 +1,175 @@
-const cityCoords = {
-  "Delhi": [28.6139, 77.2090],
-  "Mumbai": [19.0760, 72.8777],
-  "Kolkata": [22.5726, 88.3639],
-  "Chennai": [13.0827, 80.2707],
-  "Bengaluru": [12.9716, 77.5946],
-  "Hyderabad": [17.3850, 78.4867],
-  "Ahmedabad": [23.0225, 72.5714],
-  "Pune": [18.5204, 73.8567],
-  "Jaipur": [26.9124, 75.7873],
-  "Lucknow": [26.8467, 80.9462],
-  "Kanpur": [26.4499, 80.3319],
-  "Nagpur": [21.1458, 79.0882],
-  "Bhopal": [23.2599, 77.4126],
-  "Patna": [25.5941, 85.1376],
-  "Surat": [21.1702, 72.8311],
-  "Ranchi": [23.3441, 85.3096],
-  "Raipur": [21.2514, 81.6296],
-  "Thiruvananthapuram": [8.5241, 76.9366],
-  "Coimbatore": [11.0168, 76.9558],
-  "Vishakhapatnam": [17.6868, 83.2185],
-  "Chandigarh": [30.7333, 76.7794],
-  "Guwahati": [26.1445, 91.7362]
+const canvas = document.getElementById("mapCanvas");
+const ctx = canvas.getContext("2d");
+const info = document.getElementById("info");
+
+const cities = {
+  Delhi: { x: 150, y: 100 },
+  Jaipur: { x: 100, y: 200 },
+  Lucknow: { x: 250, y: 200 },
+  Mumbai: { x: 80, y: 400 },
+  Ahmedabad: { x: 120, y: 300 },
+  Bhopal: { x: 200, y: 300 },
+  Hyderabad: { x: 300, y: 400 },
+  Bengaluru: { x: 300, y: 500 },
+  Chennai: { x: 400, y: 520 },
+  Kolkata: { x: 420, y: 220 },
+  Patna: { x: 320, y: 180 },
+  Ranchi: { x: 360, y: 260 }
 };
 
-let selectedCities = [];
-const map = L.map('map').setView([22.9734, 78.6569], 5.2);
+const graph = {
+  Delhi: { Jaipur: 270, Lucknow: 490 },
+  Jaipur: { Delhi: 270, Ahmedabad: 650 },
+  Lucknow: { Delhi: 490, Patna: 600 },
+  Mumbai: { Ahmedabad: 520, Hyderabad: 710 },
+  Ahmedabad: { Jaipur: 650, Mumbai: 520, Bhopal: 580 },
+  Bhopal: { Ahmedabad: 580, Hyderabad: 780, Ranchi: 800 },
+  Hyderabad: { Mumbai: 710, Bhopal: 780, Bengaluru: 570, Chennai: 630 },
+  Bengaluru: { Hyderabad: 570, Chennai: 350 },
+  Chennai: { Bengaluru: 350, Hyderabad: 630 },
+  Kolkata: { Patna: 590, Ranchi: 390 },
+  Patna: { Lucknow: 600, Kolkata: 590, Ranchi: 330 },
+  Ranchi: { Patna: 330, Bhopal: 800, Kolkata: 390 }
+};
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors'
-}).addTo(map);
+let selected = [];
 
-// Add city markers
-for (let city in cityCoords) {
-  const marker = L.marker(cityCoords[city]).addTo(map).bindPopup(city);
-  marker.on('click', () => handleCityClick(city, cityCoords[city]));
-}
+function drawMap() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-function handleCityClick(cityName, coords) {
-  if (selectedCities.length === 2) {
-    selectedCities = [];
-    map.eachLayer(layer => {
-      if (layer._icon && !layer._popup) map.removeLayer(layer); // remove car
-      if (layer instanceof L.Polyline && !layer._popup) map.removeLayer(layer); // remove line
-    });
-  }
+  for (let from in graph) {
+    for (let to in graph[from]) {
+      const a = cities[from];
+      const b = cities[to];
 
-  selectedCities.push({ name: cityName, coords });
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = "#ccc";
+      ctx.lineWidth = 2;
+      ctx.stroke();
 
-  if (selectedCities.length === 2) {
-    drawPathAndAnimate(selectedCities[0], selectedCities[1]);
-  }
-}
-
-function drawPathAndAnimate(from, to) {
-  const line = L.polyline([from.coords, to.coords], { color: 'blue' }).addTo(map);
-  const carMarker = L.marker(from.coords, {
-    icon: L.divIcon({ className: 'car', html: '🚗' })
-  }).addTo(map);
-
-  const steps = 200;
-  let i = 0;
-
-  const latDiff = (to.coords[0] - from.coords[0]) / steps;
-  const lngDiff = (to.coords[1] - from.coords[1]) / steps;
-
-  function moveCar() {
-    if (i < steps) {
-      const newLat = from.coords[0] + latDiff * i;
-      const newLng = from.coords[1] + lngDiff * i;
-      carMarker.setLatLng([newLat, newLng]);
-      i++;
-      requestAnimationFrame(moveCar);
+      const midX = (a.x + b.x) / 2;
+      const midY = (a.y + b.y) / 2;
+      ctx.fillStyle = "#444";
+      ctx.fillText(graph[from][to], midX, midY);
     }
   }
 
-  moveCar();
+  for (let name in cities) {
+    const c = cities[name];
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, 10, 0, Math.PI * 2);
+    ctx.fillStyle = "#007BFF";
+    ctx.fill();
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "12px sans-serif";
+    ctx.fillText(name, c.x - name.length * 2.5, c.y - 15);
+  }
 }
+
+function dijkstra(start, end) {
+  const dist = {}, prev = {}, visited = new Set();
+
+  Object.keys(graph).forEach(c => {
+    dist[c] = Infinity;
+    prev[c] = null;
+  });
+  dist[start] = 0;
+
+  while (visited.size < Object.keys(graph).length) {
+    let u = null;
+    for (let c in graph) {
+      if (!visited.has(c) && (u === null || dist[c] < dist[u])) {
+        u = c;
+      }
+    }
+
+    if (u === end) break;
+    visited.add(u);
+
+    for (let v in graph[u]) {
+      const alt = dist[u] + graph[u][v];
+      if (alt < dist[v]) {
+        dist[v] = alt;
+        prev[v] = u;
+      }
+    }
+  }
+
+  const path = [];
+  let curr = end;
+  while (curr) {
+    path.unshift(curr);
+    curr = prev[curr];
+  }
+  return { path, distance: dist[end] };
+}
+
+function animateCar(path, totalDistance) {
+  let i = 0;
+  let covered = 0;
+
+  function step() {
+    if (i >= path.length - 1) return;
+
+    const from = cities[path[i]];
+    const to = cities[path[i + 1]];
+    const steps = 100;
+
+    const dx = (to.x - from.x) / steps;
+    const dy = (to.y - from.y) / steps;
+
+    let frame = 0;
+
+    function moveSegment() {
+      if (frame <= steps) {
+        drawMap();
+        const x = from.x + dx * frame;
+        const y = from.y + dy * frame;
+
+        ctx.font = "20px Arial";
+        ctx.fillText("🚗", x, y);
+
+        const partial = (graph[path[i]][path[i + 1]] * frame) / steps;
+        info.innerText = `Distance covered: ${(covered + partial).toFixed(1)} / ${totalDistance} km`;
+
+        frame++;
+        requestAnimationFrame(moveSegment);
+      } else {
+        covered += graph[path[i]][path[i + 1]];
+        i++;
+        step();
+      }
+    }
+
+    moveSegment();
+  }
+
+  step();
+}
+
+canvas.addEventListener("click", e => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  for (let name in cities) {
+    const c = cities[name];
+    const dx = x - c.x;
+    const dy = y - c.y;
+
+    if (dx * dx + dy * dy <= 100) {
+      selected.push(name);
+      if (selected.length === 2) {
+        const result = dijkstra(selected[0], selected[1]);
+        animateCar(result.path, result.distance);
+        selected = [];
+      }
+      break;
+    }
+  }
+});
+
+drawMap();
