@@ -67,13 +67,14 @@ function drawMap() {
       ctx.beginPath();
       ctx.moveTo(from.x, from.y);
       ctx.lineTo(to.x, to.y);
-      ctx.strokeStyle = "#ccc";
+      ctx.strokeStyle = "#fff"; // white road lines
+      ctx.lineWidth = 3;
       ctx.stroke();
 
       const midX = (from.x + to.x) / 2;
       const midY = (from.y + to.y) / 2;
-      ctx.fillStyle = "#000";
-      ctx.font = "12px Arial";
+      ctx.fillStyle = "#222"; // dark label text
+      ctx.font = "13px Arial";
       ctx.fillText(roads[city][target], midX, midY);
     }
   }
@@ -81,14 +82,12 @@ function drawMap() {
   for (let name in cities) {
     const point = cities[name];
 
-    // Circle dot
     ctx.beginPath();
     ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
     ctx.fillStyle = "#1976d2";
     ctx.fill();
 
-    // City label
-    ctx.fillStyle = "#111"; // dark text
+    ctx.fillStyle = "#111";
     ctx.font = "14px Segoe UI";
     ctx.textAlign = "center";
     ctx.fillText(name, point.x, point.y - 10);
