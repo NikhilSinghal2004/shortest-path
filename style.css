@@ -16,13 +16,22 @@ h1 {
   font-size: 32px;
 }
 
+.map-container {
+  position: relative;
+  width: 800px;
+  margin: 0 auto;
+}
+
+#mapImage {
+  width: 100%;
+  display: block;
+}
+
 #mapCanvas {
-  border: 3px solid #1a237e;
-  background-color: #fafafa;
-  margin-top: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  border-radius: 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 
 #info {
