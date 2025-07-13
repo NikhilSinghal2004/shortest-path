@@ -1,26 +1,30 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f0f9f0;
   text-align: center;
+  background-color: #6fcf97; /* light green */
   margin: 0;
-  padding: 20px;
+  padding: 0;
 }
 
 h1 {
-  color: #2c3e50;
+  margin: 20px 0 10px;
+  font-size: 28px;
+  color: #111;
 }
 
-#mapCanvas {
-  background-color: #d4fcdc; /* light green */
-  border: 2px solid #173825;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  margin-top: 20px;
+canvas {
+  border-top: 2px solid #2196f3;
+  margin-top: 10px;
+  background-color: transparent;
 }
 
-#distanceInfo {
-  margin-top: 20px;
-  font-weight: bold;
-  color: #2c3e50;
-  font-size: 16px;
+.info {
+  background-color: #c8f7c5;
+  padding: 10px 20px;
+  width: fit-content;
+  margin: 10px auto;
+  border-radius: 8px;
+  color: #117a10;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
