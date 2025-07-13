@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shortest Path</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Find Shortest Path</h1>
+
+  <label for="start">From: </label>
+  <select id="start"></select>
+
+  <label for="end">To: </label>
+  <select id="end"></select>
+
+  <button onclick="findPath()">Find Path</button>
+
+  <div id="output"></div>
+  <a href="index.html">⬅ Back to Home</a>
+
+  <script type="module">
+    import { graph } from './graph.js';
+
+    const startSel = document.getElementById("start");
+    const endSel = document.getElementById("end");
+    const cities = Object.keys(graph);
+
+    cities.forEach(city => {
+      startSel.add(new Option(city, city));
+      endSel.add(new Option(city, city));
+    });
+
+    function dijkstra(graph, start, end) {
+      const dist = {}, prev = {}, visited = new Set();
+      Object.keys(graph).forEach(v => dist[v] = Infinity);
+      dist[start] = 0;
+
+      while (visited.size < cities.length) {
+        let u = null;
+        for (let v of cities) {
+          if (!visited.has(v) && (u === null || dist[v] < dist[u])) u = v;
+        }
+        if (u === end || dist[u] === Infinity) break;
+
+        visited.add(u);
+        for (let neighbor in graph[u]) {
+          let alt = dist[u] + graph[u][neighbor];
+          if (alt < dist[neighbor]) {
+            dist[neighbor] = alt;
+            prev[neighbor] = u;
+          }
+        }
+      }
+
+      let path = [], u = end;
+      while (prev[u]) {
+        path.unshift(u);
+        u = prev[u];
+      }
+      if (u === start) path.unshift(start);
+      return { path, distance: dist[end] };
+    }
+
+    window.findPath = function() {
+      const start = startSel.value, end = endSel.value;
+      const result = dijkstra(graph, start, end);
+      document.getElementById("output").innerHTML =
+        result.path.length ? `🛣️ Path: ${result.path.join(" → ")}<br>📏 Distance: ${result.distance}` :
+        "❌ No path found.";
+    }
+  </script>
+</body>
+</html>
