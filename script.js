@@ -80,13 +80,18 @@ function drawMap() {
 
   for (let name in cities) {
     const point = cities[name];
+
+    // Circle dot
     ctx.beginPath();
-    ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
+    ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
     ctx.fillStyle = "#1976d2";
     ctx.fill();
-    ctx.fillStyle = "#fff";
-    ctx.font = "10px Arial";
-    ctx.fillText(name, point.x - name.length * 2.5, point.y - 12);
+
+    // City label
+    ctx.fillStyle = "#111"; // dark text
+    ctx.font = "14px Segoe UI";
+    ctx.textAlign = "center";
+    ctx.fillText(name, point.x, point.y - 10);
   }
 }
 
