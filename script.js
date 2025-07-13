@@ -23,7 +23,7 @@ const roads = {
   Vishakhapatnam: { Chennai: 400 }, Chennai: { Bengaluru: 350 }
 };
 
-// Make roads bidirectional
+// Bidirectional
 for (let city in roads) {
   for (let neighbor in roads[city]) {
     if (!roads[neighbor]) roads[neighbor] = {};
@@ -35,6 +35,11 @@ let selected = [];
 let shortestPath = [];
 let secondPath = [];
 
+let carPath = [];
+let carProgress = 0;
+let carSpeed = 0.01; // Adjust speed
+let animationId = null;
+
 function drawMap() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -45,13 +50,13 @@ function drawMap() {
       const key = `${city}-${target}`;
 
       if (shortestPath.includes(key) || shortestPath.includes(`${target}-${city}`)) {
-        ctx.strokeStyle = "#28a745"; // Green
+        ctx.strokeStyle = "#e35913ff";
         ctx.lineWidth = 4;
       } else if (secondPath.includes(key) || secondPath.includes(`${target}-${city}`)) {
-        ctx.strokeStyle = "#ffc107"; // Yellow
+        ctx.strokeStyle = "#f3e010ff";
         ctx.lineWidth = 3;
       } else {
-        ctx.strokeStyle = "#ffffff"; // Default white road
+        ctx.strokeStyle = "#ffffff";
         ctx.lineWidth = 2;
       }
 
@@ -60,7 +65,6 @@ function drawMap() {
       ctx.lineTo(to.x, to.y);
       ctx.stroke();
 
-      // Show distance only on colored roads
       if (ctx.strokeStyle !== "#ffffff") {
         const midX = (from.x + to.x) / 2;
         const midY = (from.y + to.y) / 2;
@@ -82,6 +86,37 @@ function drawMap() {
     ctx.font = "bold 16px Segoe UI";
     ctx.textAlign = "center";
     ctx.fillText(name, point.x, point.y - 12);
+  }
+
+  drawCar();
+}
+
+function drawCar() {
+  if (carPath.length === 0 || carProgress >= carPath.length - 1) return;
+
+  const segment = Math.floor(carProgress);
+  const t = carProgress - segment;
+
+  const from = cities[carPath[segment]];
+  const to = cities[carPath[segment + 1]];
+
+  const x = from.x + (to.x - from.x) * t;
+  const y = from.y + (to.y - from.y) * t;
+
+  ctx.font = "20px serif";
+  ctx.fillText("🚗", x, y);
+}
+
+function animateCar() {
+  if (carPath.length === 0) return;
+  carProgress += carSpeed;
+
+  if (carProgress < carPath.length - 1) {
+    drawMap();
+    animationId = requestAnimationFrame(animateCar);
+  } else {
+    drawMap();
+    cancelAnimationFrame(animationId);
   }
 }
 
@@ -144,11 +179,20 @@ canvas.addEventListener("click", e => {
         const blockedEdges = pathToEdges(first.path);
         const second = dijkstra(selected[0], selected[1], blockedEdges);
 
-        shortestPath = blockedEdges;
-        secondPath = pathToEdges(second.path);
+        shortestPath = pathToEdges(first.path);
+        if (second.distance !== Infinity && second.path.length > 1) {
+          secondPath = pathToEdges(second.path);
+        } else {
+          secondPath = [];
+        }
+
+        carPath = first.path;
+        carProgress = 0;
 
         distanceInfo.innerText = `Shortest path distance: ${first.distance} km`;
         drawMap();
+        cancelAnimationFrame(animationId);
+        animateCar();
         selected = [];
       }
       break;

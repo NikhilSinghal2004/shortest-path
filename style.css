@@ -1,7 +1,7 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   text-align: center;
-  background-color: #6fcf97; /* light green */
+  background-color: #0eef6c; /* light green */
   margin: 0;
   padding: 0;
 }
@@ -24,7 +24,7 @@ canvas {
   width: fit-content;
   margin: 10px auto;
   border-radius: 8px;
-  color: #117a10;
+  color: #132f13;
   font-size: 18px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
