@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>City Path Finder</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Indian Cities Shortest Path</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Welcome to City Path Finder</h1>
-  <p>Find the shortest path between cities using Dijkstra's Algorithm.</p>
-  <a href="cities.html">🗺️ View City Graph</a><br>
-  <a href="path.html">🚀 Find Shortest Path</a><br>
-  <a href="about.html">ℹ️ About Algorithm</a>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Custom JS -->
+  <script src="script.js"></script>
 </body>
 </html>
