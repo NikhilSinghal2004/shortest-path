@@ -1,24 +1,29 @@
+/* Whole page */
 body {
   font-family: 'Segoe UI', sans-serif;
   text-align: center;
-  background-color: skyblue;
+  background-color: skyblue; /* Sky blue around the map */
   margin: 0;
   padding: 0;
 }
 
+/* Main heading */
 h1 {
   margin: 20px 0 10px;
   font-size: 28px;
   color: #111;
 }
 
+/* Map canvas styling */
 canvas {
-  border: 10px solid #0eef6c; /* green border around map */
+  background: linear-gradient(to bottom, #0eef6c, #98fb98); /* Green gradient inside map */
+  border: 10px solid #0eef6c;  /* Green border around the canvas */
+  border-radius: 15px;
   margin-top: 10px;
-  background-color: #0eef6c; /* green background inside map */
-  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2); /* Optional soft shadow */
 }
 
+/* Info box styling */
 .info {
   background-color: #c8f7c5;
   padding: 10px 20px;
