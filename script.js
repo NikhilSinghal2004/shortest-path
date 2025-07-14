@@ -37,7 +37,7 @@ let secondPath = [];
 
 let carPath = [];
 let carProgress = 0;
-let carSpeed = 0.01; // Adjust speed
+let carSpeed = 0.01;
 let animationId = null;
 
 function drawMap() {
@@ -164,10 +164,32 @@ function pathToEdges(path) {
   return edges;
 }
 
+// 🖱️ Cursor changes when hovering over cities
+canvas.addEventListener("mousemove", e => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  let overCity = false;
+  for (let city in cities) {
+    const d = cities[city];
+    const dx = x - d.x;
+    const dy = y - d.y;
+    if (dx * dx + dy * dy < 100) {
+      overCity = true;
+      break;
+    }
+  }
+
+  canvas.style.cursor = overCity ? "crosshair" : "default";
+});
+
+// 🖱️ Handle city click
 canvas.addEventListener("click", e => {
   const rect = canvas.getBoundingClientRect();
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
+
   for (let city in cities) {
     const d = cities[city];
     const dx = x - d.x;
@@ -180,11 +202,8 @@ canvas.addEventListener("click", e => {
         const second = dijkstra(selected[0], selected[1], blockedEdges);
 
         shortestPath = pathToEdges(first.path);
-        if (second.distance !== Infinity && second.path.length > 1) {
-          secondPath = pathToEdges(second.path);
-        } else {
-          secondPath = [];
-        }
+        secondPath = (second.distance !== Infinity && second.path.length > 1)
+          ? pathToEdges(second.path) : [];
 
         carPath = first.path;
         carProgress = 0;

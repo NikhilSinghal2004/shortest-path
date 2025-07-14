@@ -1,7 +1,7 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   text-align: center;
-  background-color: #00db64; /* exact green from image */
+  background-color: skyblue;
   margin: 0;
   padding: 0;
 }
@@ -12,23 +12,13 @@ h1 {
   color: #111;
 }
 
-/* 🟩 New container for canvas with border and styling */
-#mapContainer {
-  display: inline-block;
-  border: 6px solid #003f88; /* dark blue attractive border */
-  border-radius: 16px;
-  padding: 10px;
-  background-color: #00db64; /* same as body, visually clean */
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-  margin: 20px auto;
-}
-
-/* Keep canvas transparent */
 canvas {
-  background-color: transparent;
+  border: 10px solid #0eef6c; /* green border around map */
+  margin-top: 10px;
+  background-color: #0eef6c; /* green background inside map */
+  border-radius: 10px;
 }
 
-/* Info styling */
 .info {
   background-color: #c8f7c5;
   padding: 10px 20px;
